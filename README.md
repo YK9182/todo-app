@@ -33,7 +33,6 @@ Pythonを用いて、以下の2種類の形態で実装しています。
 
 **起動方法**:
 ```
-bash
 cd flask_app
 pip install -r requirements.txt   # Flask>=2.3
 python app.py
@@ -57,7 +56,6 @@ python app.py
 
 **起動方法**:
 ```
-bash
 cd pyqt_app
 pip install -r requirements.txt   # PyQt5==5.15.11
 python todo_PyQt.py
