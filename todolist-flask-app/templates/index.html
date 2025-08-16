@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ToDoリスト</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .task-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid #dee2e6;
+    }
+    .task-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .task-card.completed {
+      opacity: 0.7;
+      border-left-color: #28a745;
+    }
+    .task-card.overdue {
+      border-left-color: #dc3545;
+      background-color: #fff5f5;
+    }
+    .task-card.high-priority {
+      border-left-color: #dc3545;
+    }
+    .task-card.medium-priority {
+      border-left-color: #ffc107;
+    }
+    .task-card.low-priority {
+      border-left-color: #6c757d;
+    }
+    .stats-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .priority-badge {
+      font-size: 0.75em;
+    }
+    .search-section {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container py-4">
+    <!-- ヘッダー -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <h1 class="display-6 mb-0">
+          <i class="fas fa-tasks text-primary"></i> ToDoリスト
+        </h1>
+      </div>
+      <div class="col-md-4">
+        <div class="stats-card card text-center p-3">
+          <h5 class="mb-1">進捗状況</h5>
+          <div class="row text-center">
+            <div class="col-4">
+              <div class="fw-bold">{{ stats.total }}</div>
+              <small>総数</small>
+            </div>
+            <div class="col-4">
+              <div class="fw-bold">{{ stats.completed }}</div>
+              <small>完了</small>
+            </div>
+            <div class="col-4">
+              <div class="fw-bold">{{ stats.completion_rate }}%</div>
+              <small>達成率</small>
+            </div>
+          </div>
+          {% if stats.overdue > 0 %}
+          <div class="mt-2">
+            <small class="badge bg-danger">
+              <i class="fas fa-exclamation-triangle"></i> 期限切れ: {{ stats.overdue }}件
+            </small>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- フラッシュメッセージ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else 'info' if category == 'info' else 'success' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- 検索・フィルター -->
+    <div class="search-section">
+      <form method="GET" class="row g-2">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" name="search" class="form-control" placeholder="タスクを検索..." value="{{ current_search }}">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select name="tag" class="form-select">
+            <option value="">すべてのタグ</option>
+            {% for tag in all_tags %}
+              <option value="{{ tag }}" {% if tag == current_tag %}selected{% endif %}>{{ tag }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select name="sort" class="form-select">
+            <option value="">並び替え</option>
+            <option value="due_date">期限順</option>
+            <option value="title">タイトル順</option>
+            <option value="completed">完了状況順</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-outline-primary w-100">
+            <i class="fas fa-filter"></i> 適用
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- タスク追加フォーム -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-plus-circle"></i> 新しいタスクを追加</h5>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('add_task') }}" method="POST">
+          <div class="row g-2">
+            <div class="col-md-3">
+              <input type="text" name="title" class="form-control" placeholder="タスク名*" required>
+            </div>
+            <div class="col-md-3">
+              <input type="text" name="description" class="form-control" placeholder="説明">
+            </div>
+            <div class="col-md-2">
+              <input type="date" name="due_date" class="form-control">
+            </div>
+            <div class="col-md-2">
+              <input type="text" name="tag" class="form-control" placeholder="タグ">
+            </div>
+            <div class="col-md-1">
+              <select name="priority" class="form-select">
+                <option value="high">高</option>
+                <option value="medium">中</option>
+                <option value="low">低</option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 操作ボタン -->
+    <div class="d-flex justify-content-between mb-3">
+      <div>
+        <a href="{{ url_for('sort_tasks') }}" class="btn btn-outline-info btn-sm">
+          <i class="fas fa-sort"></i> 期限順ソート
+        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+          <i class="fas fa-refresh"></i> リセット
+        </a>
+      </div>
+      <div>
+        {% if stats.completed > 0 %}
+          <a href="{{ url_for('clear_completed') }}" class="btn btn-outline-danger btn-sm" 
+             onclick="return confirm('完了済みタスクを全て削除しますか？')">
+            <i class="fas fa-trash"></i> 完了済み削除
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- タスクリスト -->
+    <div class="row">
+      {% if tasks %}
+        {% for i, task in enumerate(tasks) %}
+        <div class="col-12 mb-3">
+          <div class="card task-card {{ 'completed' if task.completed else '' }} {{ 'overdue' if task.is_overdue() else '' }} {{ task.priority }}-priority">
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-6">
+                  <div class="d-flex align-items-center">
+                    {% if task.completed %}
+                      <i class="fas fa-check-circle text-success me-2"></i>
+                    {% else %}
+                      <i class="far fa-circle text-muted me-2"></i>
+                    {% endif %}
+                    
+                    <div>
+                      <h6 class="mb-1 {{ 'text-decoration-line-through text-muted' if task.completed else '' }}">
+                        {{ task.title }}
+                        <span class="badge bg-{{ task.get_priority_color() }} priority-badge">
+                          {{ task.get_priority_text() }}
+                        </span>
+                        {% if task.is_overdue() and not task.completed %}
+                          <span class="badge bg-danger priority-badge">
+                            <i class="fas fa-exclamation-triangle"></i> 期限切れ
+                          </span>
+                        {% endif %}
+                      </h6>
+                      
+                      {% if task.description %}
+                        <p class="mb-1 text-muted small">{{ task.description }}</p>
+                      {% endif %}
+                      
+                      <div class="text-muted small">
+                        {% if task.due_date %}
+                          <i class="fas fa-calendar-alt"></i> {{ task.due_date }}
+                        {% endif %}
+                        {% if task.tag %}
+                          <span class="badge bg-light text-dark ms-2">
+                            <i class="fas fa-tag"></i> {{ task.tag }}
+                          </span>
+                        {% endif %}
+                        {% if task.days_until_due() is not none %}
+                          {% set days = task.days_until_due() %}
+                          {% if days < 0 %}
+                            <small class="text-danger ms-2">{{ -days }}日遅れ</small>
+                          {% elif days == 0 %}
+                            <small class="text-warning ms-2">期日</small>
+                          {% elif days <= 3 %}
+                            <small class="text-warning ms-2">あと{{ days }}日</small>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6 text-end">
+                  <div class="btn-group" role="group">
+                    <a href="{{ url_for('toggle_task', index=i) }}" 
+                       class="btn btn-sm {{ 'btn-outline-warning' if task.completed else 'btn-outline-success' }}">
+                      <i class="fas {{ 'fa-undo' if task.completed else 'fa-check' }}"></i>
+                      {{ '未完了' if task.completed else '完了' }}
+                    </a>
+                    
+                    <a href="{{ url_for('edit_task', index=i) }}" 
+                       class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-edit"></i> 編集
+                    </a>
+                    
+                    <a href="{{ url_for('delete_task', index=i) }}" 
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('「{{ task.title }}」を削除しますか？')">
+                      <i class="fas fa-trash"></i> 削除
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="text-center py-5">
+            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">タスクがありません</h4>
+            <p class="text-muted">新しいタスクを追加して始めましょう！</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
