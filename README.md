@@ -35,7 +35,7 @@ Pythonを用いて、以下の2種類の形態で実装しています。
 ```bash
 cd flask_app
 pip install -r requirements.txt   # Flask>=2.3
-python app.py
+python app.py```
 # ブラウザで http://127.0.0.1:5000 にアクセス
 2. GUIアプリ版（PyQt）
 デスクトップアプリとして起動
