@@ -32,10 +32,12 @@ Pythonを用いて、以下の2種類の形態で実装しています。
 - 編集画面では「現在の状態（完了/未完了、優先度、期限切れまでの日数など）」を視覚的に表示
 
 **起動方法**:
-```bash
+```
+bash
 cd flask_app
 pip install -r requirements.txt   # Flask>=2.3
-python app.py```
+python app.py
+```
 # ブラウザで http://127.0.0.1:5000 にアクセス
 2. GUIアプリ版（PyQt）
 デスクトップアプリとして起動
