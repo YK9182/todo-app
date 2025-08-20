@@ -90,23 +90,24 @@ python todo_PyQt.py
 │
 └── images/                  # スクリーンショット
     ├── web_list.png
-    ├── web_add.png
+    ├── web_main.png
     ├── web_edit.png
     ├── pyqt_list.png
-    ├── pyqt_add.png
+    ├── pyqt_main.png
     └── pyqt_menu.png
 ```
 
 ### スクリーンショット
 ### Web版（Flask）
-- タスク一覧画面
-- タスク追加フォーム
-- 編集画面
+![- タスク一覧画面](images/web_list.png)
+![- タスク追加後](images/web_main.png)
+![- 編集画面](images/web_edit.png)
 
 ### GUI版（PyQt）
-- メイン画面（タスク一覧表示）
-- タスク追加後（色付きタグ表示）
-- 右クリックメニュー表示
+![- メイン画面（タスク一覧表示）](images/pyqt_list.png)
+![- タスク追加後（色付きタグ表示）](images/pyqt_main.png)
+![- 右クリックメニュー表示](images/pyqt_menu.png)
+
 
 ### 学習の目的
 - PythonによるWebアプリとデスクトップアプリ開発の基礎習得
