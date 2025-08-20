@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt
 from task import Task
 from todolist import ToDoList
 
+
+
 class ToDoApp(QWidget):
     def __init__(self):
         super().__init__()
@@ -40,7 +42,7 @@ class ToDoApp(QWidget):
 
         self.title_input.setPlaceholderText("タイトル")
         self.desc_input.setPlaceholderText("説明")
-        self.due_input.setPlaceholderText("締切日（例: 2024/12/31）")
+        self.due_input.setPlaceholderText("締切日（例: 2025/12/31）")
         self.tag_input.setPlaceholderText("タグ（例: 勉強）")
 
         form_layout = QFormLayout()
@@ -155,7 +157,7 @@ class ToDoApp(QWidget):
         new_desc, ok2 = QInputDialog.getText(self, "編集 - 説明", "説明:", text=task.description or "")
         if not ok2:
             return
-        new_due, ok3 = QInputDialog.getText(self, "編集 - 締切日", "締切日 (例: 2024/12/31):", text=task.due_date or "")
+        new_due, ok3 = QInputDialog.getText(self, "編集 - 締切日", "締切日 (例: 2025/12/31):", text=task.due_date or "")
         if not ok3:
             return
         new_tag, ok4 = QInputDialog.getText(self, "編集 - タグ", "タグ:", text=task.tag or "")

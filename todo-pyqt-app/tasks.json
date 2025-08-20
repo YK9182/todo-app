@@ -1,23 +1,37 @@
 [
   {
-    "title": "pythonでtodolist作成",
-    "description": "",
-    "due_date": "2025/07/15",
-    "completed": false,
-    "tag": "勉強"
-  },
-  {
     "title": "スーパー買い出し",
-    "description": "きゅうり、ハム、卵",
-    "due_date": "2025/07/13",
+    "description": "ハム、きゅうり、卵",
+    "due_date": "2025/08/31",
     "completed": false,
     "tag": "買い物"
   },
   {
-    "title": "ポートフォリオ作成",
+    "title": "履歴書",
     "description": "",
-    "due_date": "2025/07/15",
+    "due_date": "2025/08/24",
     "completed": false,
     "tag": "仕事"
+  },
+  {
+    "title": "python作業",
+    "description": "PyQtで出来ることのチェック",
+    "due_date": "2025/08/28",
+    "completed": false,
+    "tag": "勉強"
+  },
+  {
+    "title": "掃除機かける",
+    "description": "",
+    "due_date": "2025/08/18",
+    "completed": false,
+    "tag": "家事"
+  },
+  {
+    "title": "リングフィット",
+    "description": "",
+    "due_date": "2025/08/17",
+    "completed": true,
+    "tag": ""
   }
 ]
