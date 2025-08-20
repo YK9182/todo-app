@@ -9,7 +9,13 @@ class Task:
         self.completed = completed
         self.tag = tag
         self.priority = priority
-        self.created_at = created_at
+        
+        # created_atが提供されていない場合は現在時刻を設定
+        if created_at is None:
+            self.created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        else:
+            self.created_at = created_at
+            
         self.completed_at = completed_at
     
     @classmethod
@@ -30,6 +36,8 @@ class Task:
         self.completed_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S") if self.completed else None
 
     def is_overdue(self):
+        if not self.due_date:
+            return False
         try:
             due = datetime.strptime(self.due_date, "%Y-%m-%d").date()
             return not self.completed and due < date.today()
@@ -37,15 +45,12 @@ class Task:
             return False
 
     def get_due_datetime(self):
-        """期限を datetime に変換（複数フォーマット対応）"""
         if not self.due_date:
             return None
-        for fmt in ("%Y-%m-%d", "%Y/%m/%d"):
-            try:
-                return datetime.strptime(self.due_date, fmt)
-            except ValueError:
-                continue
-        return None
+        try:
+            return datetime.strptime(self.due_date, "%Y-%m-%d")
+        except:
+            return None
 
     def days_until_due(self):
         dt = self.get_due_datetime()
@@ -73,3 +78,21 @@ class Task:
             '勉強': 'success',
             '買い物': 'warning'
         }.get(self.tag, 'secondary')
+
+    def get_formatted_created_at(self):
+        """作成日時を読みやすい形式で返す"""
+        try:
+            dt = datetime.strptime(self.created_at, "%Y-%m-%d %H:%M:%S")
+            return dt.strftime("%Y年%m月%d日 %H:%M")
+        except:
+            return self.created_at
+
+    def get_formatted_completed_at(self):
+        """完了日時を読みやすい形式で返す"""
+        if not self.completed_at:
+            return None
+        try:
+            dt = datetime.strptime(self.completed_at, "%Y-%m-%d %H:%M:%S")
+            return dt.strftime("%Y年%m月%d日 %H:%M")
+        except:
+            return self.completed_at

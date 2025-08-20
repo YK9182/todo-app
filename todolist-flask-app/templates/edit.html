@@ -187,13 +187,23 @@
           <div class="row">
             <div class="col-md-6">
               <small class="text-muted">
-                <i class="fas fa-plus"></i> 作成日時: {{ task.created_at }}
+                <i class="fas fa-plus"></i> 作成日時: 
+                {% if task.get_formatted_created_at %}
+                  {{ task.get_formatted_created_at() }}
+                {% else %}
+                  {{ task.created_at or '記録なし' }}
+                {% endif %}
               </small>
             </div>
             {% if task.completed_at %}
             <div class="col-md-6">
               <small class="text-muted">
-                <i class="fas fa-check"></i> 完了日時: {{ task.completed_at }}
+                <i class="fas fa-check"></i> 完了日時: 
+                {% if task.get_formatted_completed_at %}
+                  {{ task.get_formatted_completed_at() }}
+                {% else %}
+                  {{ task.completed_at }}
+                {% endif %}
               </small>
             </div>
             {% endif %}
@@ -205,8 +215,7 @@
     <!-- フッター -->
     <div class="text-center mt-5 py-3 border-top">
       <small class="text-muted">
-        <i class="fas fa-code"></i> Python Flask で作成 | 
-        <i class="fas fa-user"></i> ポートフォリオプロジェクト
+
       </small>
     </div>
   </div>
